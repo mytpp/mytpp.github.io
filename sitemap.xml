@@ -2,9 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://mytpp.github.io/2018/06/12/a-year-of-Cpp/</loc>
+    
+    <lastmod>2018-06-12T11:50:03.245Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://mytpp.github.io/categories/index.html</loc>
+    
+    <lastmod>2018-06-12T08:10:04.770Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://mytpp.github.io/2018/06/12/Introduction-to-OOP/</loc>
     
-    <lastmod>2018-06-12T07:59:31.191Z</lastmod>
+    <lastmod>2018-06-12T08:05:11.320Z</lastmod>
     
   </url>
   
