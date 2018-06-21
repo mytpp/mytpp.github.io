@@ -355,11 +355,11 @@
       
         
           
-            <h1 id="0-序言"><a href="#0-序言" class="headerlink" title="0 序言"></a>0 序言</h1><p>这篇教程也算是我的一个学习总结吧，当然我也不是多牛B，花了一年时间才刚刚入门C++，学C++也就是用来娱乐一下，也没弄出来什么高端的东西，所以当然不要期盼从这学到多前沿的工程技巧，毕竟这只是一篇导论嘛，我也只是整理了一些我读过的书上提到的知识，没什么创新点。真正的大佬估计看几秒就索然无味了（逃  </p>
+            <h1 id="0-序言"><a href="#0-序言" class="headerlink" title="0.序言"></a>0.序言</h1><p>这篇教程也算是我的一个学习总结吧，当然我也不是多牛B，花了一年时间才刚刚入门C++，学C++也就是用来娱乐一下，也没弄出来什么高端的东西，所以当然不要期盼从这学到多前沿的工程技巧，毕竟这只是一篇导论嘛，我也只是整理了一些我读过的书上提到的知识，没什么创新点。真正的大佬估计看几秒就索然无味了（逃  </p>
 <p>这篇教程可能更适合有一些 <del>C++</del> C with class语言基础，但是对于OOP思想还不甚了解的同学。  </p>
 <p>其实三个月之前就写过一个类似的<del>教程</del>知识点总结，还拿给和我一起写大作业的同学看。那篇知识点总结和这篇博客的想介绍的东西差不多，不过因为之前我还没有给自己写的东西有一个明确的定位而且写的比较仓促，所以写的乱七八糟。不过之前那片的稿子我已经丢了，正好可以重新开始写一篇，而且现在期末复习阶段课内作业都变少了，我也有足够的时间来写这个。  </p>
 <p>毕竟我也只是入门级水平，估计叙述中会有不严谨的地方，欢迎大家反馈给我。  </p>
-<h1 id="面向对象"><a href="#面向对象" class="headerlink" title="面向对象"></a>面向对象</h1><p>按照primer上的说法，OOP的核心是数据抽象、继承和动态绑定。   </p>
+<h1 id="1-面向对象"><a href="#1-面向对象" class="headerlink" title="1.面向对象"></a>1.面向对象</h1><p>按照primer上的说法，OOP的核心是数据抽象、继承和动态绑定。   </p>
 <ul>
 <li><p>数据抽象的核心是将接口和实现分离，分离之后接口的部分就是抽象出来的数据类型，从设计者的角度看，一个数据类型只取决于这个类型上支持的操作，因此一些动态语言会有“鸭子类型”的概念，C++中是没有“鸭子类型”的说法的。在C语言中，接口可以理解为函数声明，实现可以理解为函数定义。在C++中，一般情况下定义了一个类就被认为是定义了一个类型，接口可以理解为这个类定义的那些public成员函数（用户视角），因为一般情形下用户只关心这个类型上支持什么操作，而不关心这些操作如何实现；也可以理解为这个类的定义（不包括成员函数定义，包括成员函数声明），就是代码里<code>class Shit{...};</code>这段内容（编译器视角）。而实现都指的是这个类的成员函数定义。这里提到的“用户”是指使用你编写的类的程序员，希望我们在这一点上没有歧义。<br>我将编译器如何看待接口与实现分离区分出来，是考虑到了不同.h或是.cpp文件之间是有编译依存性的。如果单纯的做OOA&amp;D，只需考虑如何在各个类之间解耦就好了，但是苦逼的C++程序员还要考虑如何在不同编译单元之间解耦；理想情况是我改动了一个编译单元，只要重新编译这一个文件然后再和其他编译单元链接就好了，比较坏的情况是我改动了一个编译单元，What the …怎么整个工程全都要重新编译了，最理想的情况是超大工程改一行代码可以直接编译到下班。你看Java程序员就不用担心这些（逃。为了解决这个问题，C++中有一个经典的技巧叫 pImpl（pointer to implementation）（挖坑不填，（tao  </p>
 </li>
@@ -368,7 +368,7 @@
 <li><p>动态绑定。这不就是多态嘛。我可以只用基类提供的那套接口，但是获得不同的实现，即一套接口可以绑定到不同的实现上，这些不同实现在派生类里完成。这就涉及到虚函数了，要探究语言层面的底层实现的话还会涉及到vtbl和vptr，本文中会提一下，但不会涉及太深，想深入研究的同学移步《深度探索C++对象模型》，据说很经典的一本书，但我没看过，就不便多做评论了。  </p>
 </li>
 </ul>
-<h1 id="两个设计上的好习惯"><a href="#两个设计上的好习惯" class="headerlink" title="两个设计上的好习惯"></a>两个设计上的好习惯</h1><h2 id="（1）private-数据成员变量"><a href="#（1）private-数据成员变量" class="headerlink" title="（1）private 数据成员变量"></a>（1）private 数据成员变量</h2><p>当然要将数据成员变量声明为private了！这也不是个人偏好，这是前人无数次采坑之后总结出来的法则，也只有这样才能体现出封装的好处。<br>首先，很多数据成员其实根本没有必要让外部访问的，它们可能只是维护一下该对象的内部状态，比如说一个表示文本文件的类TextFile，维护一个bool型成员变量表示文本文件是否被修改过：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TextFile</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">close</span><span class="params">()</span></span>;   <span class="comment">//try to close the file</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">bool</span> isModified; <span class="comment">//check if the file needs saving when closing it</span></span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h1 id="2-两个设计上的好习惯"><a href="#2-两个设计上的好习惯" class="headerlink" title="2.两个设计上的好习惯"></a>2.两个设计上的好习惯</h1><h2 id="（1）private-数据成员变量"><a href="#（1）private-数据成员变量" class="headerlink" title="（1）private 数据成员变量"></a>（1）private 数据成员变量</h2><p>当然要将数据成员变量声明为private了！这也不是个人偏好，这是前人无数次采坑之后总结出来的法则，也只有这样才能体现出封装的好处。<br>首先，很多数据成员其实根本没有必要让外部访问的，它们可能只是维护一下该对象的内部状态，比如说一个表示文本文件的类TextFile，维护一个bool型成员变量表示文本文件是否被修改过：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TextFile</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">close</span><span class="params">()</span></span>;   <span class="comment">//try to close the file</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">bool</span> isModified; <span class="comment">//check if the file needs saving when closing it</span></span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
 <p>如果改文本文件被修改过，就将改标志置为true，然后关闭文件时会检查该标志，如果该标志被置位则询问是否保存该文件。那这个标志有没有被置位让这个类的对象自己管理就好了嘛，用户不需要操心这个，因此将其声明为private是完全合理的。  </p>
 <p>而且，就算真的需要外部访问，一般也不允许直接访问的，而是要写成这样：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Data</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">const</span> <span class="keyword">int</span> <span class="title">getData</span><span class="params">()</span></span>;   <span class="comment">//optional</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setData</span><span class="params">(<span class="keyword">int</span> data)</span></span>; <span class="comment">//optional</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span> m_data;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
 <p>通过选择性地给出get和set函数，就可以控制<code>m_data</code>的访问方式（只读、只写、可读可写），而如果直接将<code>m_data</code>声明为public就没有这种效果。  </p>
@@ -393,7 +393,7 @@
 <p>但要注意一下一般只有用于多态的基类才有虚析构函数的需求，不是所有的类都用做多态用途的。如果没有必要使用虚析构函数就不要这么做了，这样反而会造成额外开销（会引入vtbl和vptr这些东西，浪费了几个指针的空间，本文后面会提到这些）。</p>
 <p>另外一种建议声明虚析构函数的地方是：有时候你希望拥有抽象类，但手头又没有纯虚函数，这时候可以选择将析构函数声明为纯虚函数，并提供析构函数的定义（无定义理论上会报链接错误的啊，但我们课程设计中没有定义这个程序也能跑起来，就很奇怪，难道被编译器优化了？┭┮﹏┭┮当时忘了定义这个是我的失误，不知道验收时程序崩了好几次会不会跟这个有关，隐约感觉又坑了队友一次…）  </p>
 <p>你可能又有疑问：抽象类不一般都用作接口嘛，接口类一般都用作多态的吧，那怎么会没有其他的虚函数呢？嗯，是这样的（前半句），但总有例外，比如混入类（Mixin Class）了解一下？<br>按我的理解来解释一下这个技术：就像以前写C语言代码时有两个函数用用到了相同的代码段，为了贯彻DRY原则，好的设计者会把这两个函数中重复的部分抽出来形成一个新函数，让之前的两个函数在内部去调用这个新函数。在C++里类似地，如果有两个类都需要实现一部分相同的功能，一个可选的设计是将重复的部分抽出来形成一个新类，然后让原来的两个类都继承自这个类，然而这个类仅仅是为了减少重复代码而出现的，并不需要实例化出对象，所以干脆直接设为抽象类（还记得吗，上面刚说过，如果不想给用户做一件事的权利，就从语法层面禁止这件事的出现）。<br>关于这个技术的细节不想在这个入门教程里提了，有兴趣的同学可以看《More Effective C++》条款27，有一个使用这个技术的例子。  </p>
-<h1 id="接口与实现，继承与复合"><a href="#接口与实现，继承与复合" class="headerlink" title="接口与实现，继承与复合"></a>接口与实现，继承与复合</h1><p>《Effective C++》和《设计模式》中对一些相同概念有不同的叫法，这些概念有些比较重要，因此在这里简单区分一下，后面会详细说明其中几个点。<br>Scott Meyers（《Effective C++》作者）区分了类与类之间三种不同关系：</p>
+<h1 id="3-接口与实现，继承与复合"><a href="#3-接口与实现，继承与复合" class="headerlink" title="3.接口与实现，继承与复合"></a>3.接口与实现，继承与复合</h1><p>《Effective C++》和《设计模式》中对一些相同概念有不同的叫法，这些概念有些比较重要，因此在这里简单区分一下，后面会详细说明其中几个点。<br>Scott Meyers（《Effective C++》作者）区分了类与类之间三种不同关系：</p>
 <ul>
 <li>public 继承表示 is-a 关系</li>
 <li>复合（composition）表示 has-a 或 is-inplemented-in-terms-of 关系</li>
@@ -428,7 +428,7 @@
 <li>聚合（aggregation）（被写死的编译时刻结构）</li>
 <li>相识（acquaintance）（可变的运行时刻结构）</li>
 </ul>
-<h1 id="区分-接口继承-与-实现继承"><a href="#区分-接口继承-与-实现继承" class="headerlink" title="区分 接口继承 与 实现继承"></a>区分 接口继承 与 实现继承</h1><p>这一小节使用Scott Meyers的思路，首先要知道 public 继承表示 is-a 关系：</p>
+<h1 id="4-区分-接口继承-与-实现继承"><a href="#4-区分-接口继承-与-实现继承" class="headerlink" title="4.区分 接口继承 与 实现继承"></a>4.区分 接口继承 与 实现继承</h1><p>这一小节使用Scott Meyers的思路，首先要知道 public 继承表示 is-a 关系：</p>
 <blockquote>
 <p>如果你令 <code>class D</code>（“Derived”）以 public 形式继承 <code>class B</code>（“Base”），你便是告诉C++编译器（以及你的代码读者）说，每一个类型为 D 的对象同时也是一个类型为 B 的对象，反之不成立。你的意思是 B 比 D 表现出更一般化的概念，而 D 比 B 表现出更特殊化的概念。你主张“ B 对象可派上用场的任何地方，D 对象一样可以派上用场”（译注：此即所谓Liskov Substitution Principle），因为每一个 D 对象都是一种（是一个）B 对象。反之如果你需要一个 D 对象，B 对象无法效劳，因为虽然每个 D 对象都是一个 B 对象，反之并不成立。</p>
 </blockquote>
@@ -450,7 +450,7 @@
 <h2 id="（3）声明一个非纯虚函数的目的是让派生类继承函数的接口和缺省实现"><a href="#（3）声明一个非纯虚函数的目的是让派生类继承函数的接口和缺省实现" class="headerlink" title="（3）声明一个非纯虚函数的目的是让派生类继承函数的接口和缺省实现"></a>（3）声明一个非纯虚函数的目的是让派生类继承函数的接口和缺省实现</h2><p>非纯虚函数是必须定义的，这份定义也就成了缺省实现。同时其派生类也可以选择不再定义这个函数（纯虚函数就没有这种选择权），那就相当于采用了缺省实现，<br>比如上面例子中<code>EditCommand</code>有一个<code>error(const std::string &amp;msg)</code>函数，意味着提供了一份缺省错误处理行为，它的子类们可以使用这个缺省实现，也可以自己重新定义一个自己专属的实现方式。  </p>
 <h2 id="（4）声明一个非虚函数的目的是让派生类继承函数的接口和缺省实现"><a href="#（4）声明一个非虚函数的目的是让派生类继承函数的接口和缺省实现" class="headerlink" title="（4）声明一个非虚函数的目的是让派生类继承函数的接口和缺省实现"></a>（4）声明一个非虚函数的目的是让派生类继承函数的接口和缺省实现</h2><p>比如上面实例中<code>EditCommand</code>的<code>std::uint64_t executeTime()</code>函数，希望对所有命令的开始执行的时间点有一个统一的表示方法，因此讲该函数声明为非虚函数，提供了一份强制性实现来确保该表示的一致性。    </p>
 <p>一个设计上的好习惯是绝不重新定义继承来的非虚函数，因为这样做容易产生（设计上的）歧义，会给使用该继承体系的用户造成困扰。</p>
-<h1 id="区分-复合-与-private继承"><a href="#区分-复合-与-private继承" class="headerlink" title="区分 复合 与 private继承"></a>区分 复合 与 private继承</h1><p>语法上，复合与private继承完全不是同一个东西，不过它们在面向对象设计中可以表现相同的功能（is-inplemented-in-terms-of 关系），当然也有很多不同，因此在这里区分一下。</p>
+<h1 id="5-区分-复合-与-private继承"><a href="#5-区分-复合-与-private继承" class="headerlink" title="5.区分 复合 与 private继承"></a>5.区分 复合 与 private继承</h1><p>语法上，复合与private继承完全不是同一个东西，不过它们在面向对象设计中可以表现相同的功能（is-inplemented-in-terms-of 关系），当然也有很多不同，因此在这里区分一下。</p>
 <h2 id="复合"><a href="#复合" class="headerlink" title="复合"></a>复合</h2><p>前面已经提到：  </p>
 <blockquote>
 <p>复合（composition）是类型间的一种关系，当某种类型的对象内含其他类型的对象，便是这种关系。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Address</span> &#123;</span> ... &#125;;           <span class="comment">// 某人居住之处</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PhoneNumber</span> &#123;</span> ... &#125;;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  ...</span><br><span class="line"><span class="keyword">private</span>:  </span><br><span class="line"><span class="built_in">string</span> name;                   <span class="comment">// 下层对象  </span></span><br><span class="line">Address address;               <span class="comment">// 同上  </span></span><br><span class="line">PhoneNumber voiceNumber;       <span class="comment">// 同上  </span></span><br><span class="line">PhoneNumber faxNumber;         <span class="comment">// 同上</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
@@ -502,15 +502,15 @@
 <blockquote>
 <p>然而，我们的经验表明：设计者往往过度使用了继承这种复用技术。但依赖于对象组合 技术的设计却有更好的复用性(或更简单)。你将会看到设计模式中一再使用对象组合技术。 </p>
 </blockquote>
-<h1 id="vtbl，vptr，RTTI"><a href="#vtbl，vptr，RTTI" class="headerlink" title="vtbl，vptr，RTTI"></a>vtbl，vptr，RTTI</h1><p>最后我们来简单介绍一下vtbl和vtpr，了解了这些，就可以对虚函数、RTTI的成本有直观一点的认识了。<br>这一节大量引用《More Effective C++》条款24中的内容，就不在文中用引用区块标识了。</p>
+<h1 id="6-vtbl，vptr，RTTI"><a href="#6-vtbl，vptr，RTTI" class="headerlink" title="6.vtbl，vptr，RTTI"></a>6.vtbl，vptr，RTTI</h1><p>最后我们来简单介绍一下vtbl和vtpr，了解了这些，就可以对虚函数、RTTI的成本有直观一点的认识了。<br>这一节大量引用《More Effective C++》条款24中的内容，就不在文中用引用区块标识了。</p>
 <p>我们都知道当虚函数被调用的时候，调用的是基类函数还是派生类函数是由对象的动态类型决定的。那么编译器就必须提供一套实现这个功能的机制，大部分编译器都使用vtbl（virtual table）和vptr（virtual table pointer）这套机制。</p>
 <p>vtbl 通常是一个由函数指针组成的数组，所有声明或继承了虚函数的类，都会有自己的 vtbl，其中放着该类中各个虚函数实现体的指针。  </p>
 <p>《More Effective C++》中的例子：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C1</span> &#123;</span> </span><br><span class="line"><span class="keyword">public</span>: </span><br><span class="line">  C1(); </span><br><span class="line">  <span class="keyword">virtual</span> ~C1(); </span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f1</span><span class="params">()</span></span>; </span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">int</span> <span class="title">f2</span><span class="params">(<span class="keyword">char</span> c)</span> <span class="keyword">const</span></span>; </span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f3</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; s)</span></span>; </span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">f4</span><span class="params">()</span> <span class="keyword">const</span></span>; </span><br><span class="line">  ... </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>C1 的 virtual table 数组看起来如下图所示：<br><img src="vtbl.png" alt="vtbl"></p>
+<p>C1 的 virtual table 数组看起来如下图所示：<br><img src="/images/vtbl.png" alt="vtbl"></p>
 <p>如果另一个 C2 类继承自 C1，像这样：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C2</span>:</span> <span class="keyword">public</span> C1 &#123; </span><br><span class="line"><span class="keyword">public</span>: </span><br><span class="line">  C2();                                      <span class="comment">// 非虚函数 </span></span><br><span class="line">  <span class="keyword">virtual</span> ~C2();                             <span class="comment">// 重定义函数 </span></span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f1</span><span class="params">()</span></span>;                         <span class="comment">// 重定义函数 </span></span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f5</span><span class="params">(<span class="keyword">char</span> *str)</span></span>;                <span class="comment">// 新的虚函数 </span></span><br><span class="line">  ... </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>则 C2 的 vtbl 如下图（这些项目包括指向没有被 C2 重定义的 C1 虚函数的指针）：<br><img src="vtbl1.png" alt="vtbl"></p>
+<p>则 C2 的 vtbl 如下图（这些项目包括指向没有被 C2 重定义的 C1 虚函数的指针）：<br><img src="/images/vtbl1.png" alt="vtbl"></p>
 <p>只有 vtbl 是不行的，因为每个有 vtbl 的类的对象需要能够找到 vtbl 的位置，vptr（ virtual table 这样一个辅助完成这项工作的指针，它指向 vtbl 的地址。vptr 是一个看不见的数据成员，它在对象中的位置只有编译器才知道。   </p>
-<p>一个包含多个 C1 和 C2 对象的程序，大概长这样：<br><img src="vtbl2.png" alt="vtbl"></p>
+<p>一个包含多个 C1 和 C2 对象的程序，大概长这样：<br><img src="/images/vtbl2.png" alt="vtbl"></p>
 <p>因此对于一个虚函数调用：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">C1 *pC1;</span><br><span class="line">pC1-&gt;f1();</span><br></pre></td></tr></table></figure></p>
 <p>编译器生成的代码会做这些事：</p>
 <ol>
@@ -526,9 +526,39 @@
 <li>相当于放弃了 inline。当通过对象调用虚函数时，它其实是可以被内联的，但是大多数虚函数是通过对象的指针或引用被调用的，这种调用不能被内联（一个 inline 函数若要被取地址，编译器通常必须为该函数生成一个 outlined 本体）。因为这种调用是标准的调用方式，所以虚函数实际上相当于不能被内联。  </li>
 </ol>
 <p>既然这里把 vtbl，vptr 和 RTTI 放到同一节，你可能也已经想到了 RTTI 也是借助了 vtbl 来实现的。事实上C++语法规定只有当某种类型至少有一个虚函数，才能保证运行时类型识别正常工作，参考<a href="https://en.cppreference.com/w/cpp/language/object#Polymorphic_objects" target="_blank" rel="noopener">Polymorphic objects</a>。  </p>
-<p>例如，vtbl 数组的索引 0 处可以包含一个 type_info 对象的指针，这个对象属于该 vtbl<br>相对应的类。上述 C1 类的 vtbl 看上去象这样:<br><img src="rtti.png" alt="rtti"></p>
+<p>例如，vtbl 数组的索引 0 处可以包含一个 type_info 对象的指针，这个对象属于该 vtbl<br>相对应的类。上述 C1 类的 vtbl 看上去象这样:<br><img src="/images/rtti.png" alt="rtti"></p>
 <p>最初我读到这里的时候想，那 dynamic_cast 的成本岂不是就和调用虚函数差不多了，为什么各种书上还说 dynamic_cast 成本高而不推荐使用呢？后来翻书（《Effective C++》）又看到了 dynamic_cast 一个很普遍的实现版本基于“class名称的字符串比较”，继承体系越深，dynamic_cast 的成本就越高。所以依旧不推荐使用 dynamic_cast（尽量还是用虚函数替代）。  </p>
-<p>最后有一个 vtbl，vptr 和 RTTI 代价总结<br>Feature |Increases Size of Objects |Increases Per-Class Data |Reduces Inlining<br>-|-|-|-<br>Virtual Functions| Yes| Yes| Yes<br>Virtual Base Classes| Often| Sometimes| No<br>RTTI| No| Yes| No </p>
+<p>最后有一个 vtbl，vptr 和 RTTI 代价总结  </p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Increases Size of Objects</th>
+<th>Increases Per-Class Data</th>
+<th>Reduces Inlining</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Virtual Functions</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Virtual Base Classes</td>
+<td>Often</td>
+<td>Sometimes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>RTTI</td>
+<td>No</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <p>《More Effective C++》条款24中还有关于当多重继承混入时的讨论，这里没有提到，有兴趣的同学自己看书吧（逃</p>
 
           
@@ -622,7 +652,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">1</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -633,7 +663,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>
