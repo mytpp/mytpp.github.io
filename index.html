@@ -202,16 +202,6 @@
         </li>
       
         
-        <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
-            
-            Tags
-          </a>
-        </li>
-      
-        
         <li class="menu-item menu-item-categories">
           <a href="/categories/" rel="section">
             
@@ -250,6 +240,157 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://mytpp.github.io/2018/07/08/课程设计-文本编辑器中用到的设计模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="mytpp">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MyTpp's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/08/课程设计-文本编辑器中用到的设计模式/" itemprop="url">课程设计-文本编辑器中用到的设计模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-08T15:05:55+08:00">
+                2018-07-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CPP/" itemprop="url" rel="index">
+                    <span itemprop="name">CPP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><p>大二下学期学校开了一门课：数据结构课程设计，要求三人组队完成一个简易的文本编辑器。底层数据结构都被老师规定好了不能改，也没什么可讲的，这篇文章主要谈其中用到的设计模式：Singleton模式（没有出现在最终版本中）、Command模式、Visitor模式。这也是我第一次使用设计模式。  </p>
+<p>顺带一提，《设计模式》真的是很好的OOP入门书，不要被它的名字吓到，GoF在书的最后也说了这本书是一本合适的入门指南，学习这些设计模式有助于新手理解已有的面向对象系统。第一次读看不懂全部内容很正常，即使这样也能从中学到很多的工程知识，没必要“取之尽锱铢”。  </p>
+<p>感谢我的队友 <a href="https://github.com/Dixeran" target="_blank" rel="noopener">Dixeran</a> 和 TMT，who提供了最强的支持。也很感谢杨俊老师提供的提供的这次锻练习机会。<br>抄手也很好吃。  </p>
+<p>我们课程设计的源代码在GayHub上开源：<a href="https://github.com/mytpp/MiniEditor" target="_blank" rel="noopener">MiniEditor</a></p>
+<h1 id="Singleton模式"><a href="#Singleton模式" class="headerlink" title="Singleton模式"></a>Singleton模式</h1><p>本来想用 Singleton 模式自己写一个剪切板的，但后来发现直接通过QT提供的接口用操作系统自带的剪切板更方便，就把这段代码删了，as I mentioned before。   </p>
+<p>先简单介绍一下 Singleton 模式：<br>按照《设计模式》中的说法，Singleton 模式保证一个类仅有一个实例，并提供一个访问它的全局访问点。它是对全局变量的一种改进，避免了那些存储唯一实例的全局变量污染命名空间。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/07/08/课程设计-文本编辑器中用到的设计模式/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -361,6 +502,9 @@
 <p>其实三个月之前就写过一个类似的<del>教程</del>知识点总结，还拿给和我一起写大作业的同学看。那篇知识点总结和这篇博客的想介绍的东西差不多，不过因为之前我还没有给自己写的东西有一个明确的定位而且写的比较仓促，所以写的乱七八糟。不过之前那片的稿子我已经丢了，正好可以重新开始写一篇，而且现在期末复习阶段课内作业都变少了，我也有足够的时间来写这个。  </p>
 <p>毕竟我也只是入门级水平，估计叙述中会有不严谨的地方，欢迎大家反馈给我。  </p>
 <h1 id="面向对象"><a href="#面向对象" class="headerlink" title="面向对象"></a>面向对象</h1><p>按照primer上的说法，OOP的核心是数据抽象、继承和动态绑定。   </p>
+<ul>
+<li>数据抽象的核心是将接口和实现分离，分离之后接口的部分就是抽象出来的数据类型，从设计者的角度看，一个数据类型只取决于这个类型上支持的操作，因此一些动态语言会有“鸭子类型”的概念，C++中是没有“鸭子类型”的说法的。在C语言中，接口可以理解为函数声明，实现可以理解为函数定义。在C++中，一般情况下定义了一个类就被认为是定义了一个类型，接口可以理解为这个类定义的那些public成员函数（用户视角），因为一般情形下用户只关心这个类型上支持什么操作，而不关心这些操作如何实现；也可以理解为这个类的定义（不包括成员函数定义，包括成员函数声明），就是代码里<code>class Shit{...};</code>这段内容（编译器视角）。而实现都指的是这个类的成员函数定义。这里提到的“用户”是指使用你编写的类的程序员，希望我们在这一点上没有歧义。<br>我将编译器如何看待接口与实现分离区分出来，是考虑到了不同.h或是.cpp文件之间是有编译依存性的。如果单纯的做OOA&amp;D，只需考虑如何在各个类之间解耦就好了，但是苦逼的C++程序员还要考虑如何在不同编译单元之间解耦；理想情况是我改动了一个编译单元，只要重新编译这一个文件然后再和其他编译单元链接就好了，比较坏的情况是我改动了一个编译单元，What the …怎么整个工程全都要重新编译了，最理想的情况是超大工程改一行代码可以直接编译到下班。你看Java程序员就不用担心这些（逃。为了解决这个问题，C++中有一个经典的技巧叫 pImpl（pointer to implementation）（挖坑不填，（tao  </li>
+</ul>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2018/06/12/Introduction-to-OOP/#more" rel="contents">
@@ -447,7 +591,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

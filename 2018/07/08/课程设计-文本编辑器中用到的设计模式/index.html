@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="Chinese">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="OOP," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="序言大二下学期学校开了一门课：数据结构课程设计，要求三人组队完成一个简易的文本编辑器。底层数据结构都被老师规定好了不能改，也没什么可讲的，这篇文章主要谈其中用到的设计模式：Singleton模式（没有出现在最终版本中）、Command模式、Visitor模式。这也是我第一次使用设计模式。   顺带一提，《设计模式》真的是很好的OOP入门书，不要被它的名字吓到，GoF在书的最后也说了这本书是一本合适">
+<meta name="keywords" content="OOP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="课程设计-文本编辑器中用到的设计模式">
+<meta property="og:url" content="https://mytpp.github.io/2018/07/08/课程设计-文本编辑器中用到的设计模式/index.html">
+<meta property="og:site_name" content="MyTpp&#39;s Blog">
+<meta property="og:description" content="序言大二下学期学校开了一门课：数据结构课程设计，要求三人组队完成一个简易的文本编辑器。底层数据结构都被老师规定好了不能改，也没什么可讲的，这篇文章主要谈其中用到的设计模式：Singleton模式（没有出现在最终版本中）、Command模式、Visitor模式。这也是我第一次使用设计模式。   顺带一提，《设计模式》真的是很好的OOP入门书，不要被它的名字吓到，GoF在书的最后也说了这本书是一本合适">
+<meta property="og:locale" content="Chinese">
+<meta property="og:image" content="https://mytpp.github.io/images/command.png">
+<meta property="og:image" content="https://mytpp.github.io/images/undo%20redo0.png">
+<meta property="og:image" content="https://mytpp.github.io/images/undo%20redo1.png">
+<meta property="og:image" content="https://mytpp.github.io/images/undo%20redo2.png">
+<meta property="og:image" content="https://mytpp.github.io/images/visitor.png">
+<meta property="og:updated_time" content="2018-07-09T16:15:22.398Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="课程设计-文本编辑器中用到的设计模式">
+<meta name="twitter:description" content="序言大二下学期学校开了一门课：数据结构课程设计，要求三人组队完成一个简易的文本编辑器。底层数据结构都被老师规定好了不能改，也没什么可讲的，这篇文章主要谈其中用到的设计模式：Singleton模式（没有出现在最终版本中）、Command模式、Visitor模式。这也是我第一次使用设计模式。   顺带一提，《设计模式》真的是很好的OOP入门书，不要被它的名字吓到，GoF在书的最后也说了这本书是一本合适">
+<meta name="twitter:image" content="https://mytpp.github.io/images/command.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://mytpp.github.io/2018/07/08/课程设计-文本编辑器中用到的设计模式/"/>
+
+
+
+
+
+  <title>课程设计-文本编辑器中用到的设计模式 | MyTpp's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="Chinese">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">MyTpp's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://mytpp.github.io/2018/07/08/课程设计-文本编辑器中用到的设计模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="mytpp">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MyTpp's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">课程设计-文本编辑器中用到的设计模式</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-08T15:05:55+08:00">
+                2018-07-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CPP/" itemprop="url" rel="index">
+                    <span itemprop="name">CPP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><p>大二下学期学校开了一门课：数据结构课程设计，要求三人组队完成一个简易的文本编辑器。底层数据结构都被老师规定好了不能改，也没什么可讲的，这篇文章主要谈其中用到的设计模式：Singleton模式（没有出现在最终版本中）、Command模式、Visitor模式。这也是我第一次使用设计模式。  </p>
+<p>顺带一提，《设计模式》真的是很好的OOP入门书，不要被它的名字吓到，GoF在书的最后也说了这本书是一本合适的入门指南，学习这些设计模式有助于新手理解已有的面向对象系统。第一次读看不懂全部内容很正常，即使这样也能从中学到很多的工程知识，没必要“取之尽锱铢”。  </p>
+<p>感谢我的队友 <a href="https://github.com/Dixeran" target="_blank" rel="noopener">Dixeran</a> 和 TMT，who提供了最强的支持。也很感谢杨俊老师提供的提供的这次锻练习机会。<br>抄手也很好吃。  </p>
+<p>我们课程设计的源代码在GayHub上开源：<a href="https://github.com/mytpp/MiniEditor" target="_blank" rel="noopener">MiniEditor</a></p>
+<h1 id="Singleton模式"><a href="#Singleton模式" class="headerlink" title="Singleton模式"></a>Singleton模式</h1><p>本来想用 Singleton 模式自己写一个剪切板的，但后来发现直接通过QT提供的接口用操作系统自带的剪切板更方便，就把这段代码删了，as I mentioned before。   </p>
+<p>先简单介绍一下 Singleton 模式：<br>按照《设计模式》中的说法，Singleton 模式保证一个类仅有一个实例，并提供一个访问它的全局访问点。它是对全局变量的一种改进，避免了那些存储唯一实例的全局变量污染命名空间。</p>
+<a id="more"></a>
+<p>全局只维护一个剪切板的实例是非常合情合理的设计，因此最初设计的时候会想用 Singleton 模式实现剪切板。这里采用的是 Scott Meyers 改进后的 Singleton 模式，与GoF书中的略有不同，一会儿会详细说明。下面是代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ClipBoard</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ClipBoard(<span class="keyword">const</span> ClipBoard&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    ClipBoard&amp; <span class="keyword">operator</span> = (<span class="keyword">const</span> ClipBoard&amp;) = <span class="keyword">delete</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> ClipBoard&amp; <span class="title">instance</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">QString <span class="title">getContent</span><span class="params">()</span></span>;           <span class="comment">//getter</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setContent</span><span class="params">(QString&amp; str)</span></span>;  <span class="comment">//setter</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    ClipBoard();</span><br><span class="line">    QString content;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ClipBoard&amp; ClipBoard::instance() &#123; </span><br><span class="line">    <span class="keyword">static</span> ClipBoard _instance;  </span><br><span class="line">    <span class="keyword">return</span> _instance; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">QString ClipBoard::getContent()&#123;   </span><br><span class="line">    <span class="keyword">return</span> content;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setContent</span><span class="params">(QString&amp; str)</span> </span>&#123;</span><br><span class="line">    content = str;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>让构造函数是 private 的，是为了禁止用户自行创建<code>ClipBoard</code>的权利，从而控制该单件的访问点。这里全局维护的唯一一个<code>ClipBoard</code>实例被放在<code>ClipBoard::instance()</code>函数内部作为 local static 对象，该函数返回该局部对象的引用，用户代码可以这样使用<code>ClipBoard</code>:<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">QString content = ClipBoard::instance().getContent();</span><br></pre></td></tr></table></figure></p>
+<p>可以看看使用QT提供的操作系统剪切板的接口的使用方式：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">QString content = QGuiApplication::clipboard()-&gt;text();</span><br></pre></td></tr></table></figure></p>
+<p>是不是非常像！可以看一下相关的文档描述（来自<a href="http://doc.qt.io/qt-5/qclipboard.html#details" target="_blank" rel="noopener">QClipboard</a>）：</p>
+<blockquote>
+<p>There is a single QClipboard object in an application, accessible as QGuiApplication::clipboard().  </p>
+</blockquote>
+<p>果然！QT也是用的 Singleton 模式实现的<code>QClipboard</code>，只不过访问点不由<code>QClipboard</code>类本身提供，而是由<code>QGuiApplication</code>提供。这也体现了 Singleton 模式的灵活性：我们可以控制单例的访问点。</p>
+<h2 id="比较-GoF-Singleton-与-Meyers-Singleton"><a href="#比较-GoF-Singleton-与-Meyers-Singleton" class="headerlink" title="比较 GoF Singleton 与 Meyers Singleton"></a>比较 GoF Singleton 与 Meyers Singleton</h2><p>再来比较一下 GoF 的 Singleton 模式与 Scott Meyers 改进后的 Singleton 模式：<br>先列出 GoF Singleton 的模样：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> &#123;</span>     </span><br><span class="line"><span class="keyword">public</span>:        </span><br><span class="line">    <span class="function"><span class="keyword">static</span> Singleton* <span class="title">Instance</span><span class="params">()</span></span>;</span><br><span class="line"><span class="keyword">protected</span>:         </span><br><span class="line">    Singleton(); </span><br><span class="line"><span class="keyword">private</span>:         </span><br><span class="line">    <span class="keyword">static</span> Singleton* _instance;     </span><br><span class="line">&#125;; </span><br><span class="line"></span><br><span class="line">Singleton* Singleton::_instance = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">Singleton* Singleton::Instance() &#123; </span><br><span class="line">    <span class="keyword">if</span> (_instance == <span class="number">0</span>) &#123;            </span><br><span class="line">         _instance = <span class="keyword">new</span> Singleton;         </span><br><span class="line">    &#125;         </span><br><span class="line">    <span class="keyword">return</span> _instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Meyers Singleton 的例子就是上面<code>Clipboard</code>的代码。  </p>
+<p>GoF是让类来维护这个实例的指针，然后在<code>Singleton::Instance ()</code>中检查指针是否为空，若为空则创建对象（这个手法叫<a href="https://en.wikipedia.org/wiki/Lazy_initialization" target="_blank" rel="noopener">Lazy initialization</a>），可以想到这么做（而不是在一开始就创建对象）的好处是，如果这个<code>Singleton</code>类在程序运行期间很少被用到，那么就减少了这种情形下的空间开销。但坏处是，假如经常用到这个类，那每次都要检查一遍该单件是否存在，又增大了开销。第二个坏处是，当这个单件不再用的时候，还要用户手动delete掉这个单件，不太方便，更可怕的是用户可能不小心错误地 delete 了该单例，那就真炸了，不想让用户犯这个错误，就不要给用户这个权力。（当然我还是很好奇 QT 中为什么要传出来全局唯一的<code>QClipboard</code>的指针给我，就不怕我 delete 了它么？也许是因为考虑了多线程的情况会有所影响？这里要提一下，我这里讨论的 Singleton 模式都是假定在单线程环境中的）   </p>
+<p>一种避免每次检查的改进方法是：考虑将类中的<code>static Singleton* _instance;</code>这句改为<code>static Singleton _instance;</code>，然后在<code>Singleton::Instance()</code>中也就不用检查了，代价之一是该单例不管用不用到，在程序运行期间会一直存在；第二是由于C++没有规定不同编译单元内的 non-local static 对象的初始化顺序，如果不同编译单元内的 non-local static 对象的初始化存在依赖关系，可能出现使用一个未初始化的对象去初始化另一个对象的情况。（如果想不明白可以参考《Effective C++》条款4的例子）  </p>
+<p>Meyers Singleton模式解决了上面的所有问题，它利用了C++语言的一条规则（摘自《Effective C++》条款4）：  </p>
+<blockquote>
+<p>C++保证，函数内的 local static 对象会在“该函数被调用期间”“首次遇上该对象定义式”时被初始化。</p>
+</blockquote>
+<p>Meyers Singleton让单件成为函数内部的 local static 对象，所以只能通过函数返回出来的该对象的引用访问它，所以访问到单件时它一定是已被初始化的。而且返回出来的是引用而不是指针，也避免了让用户 delete 单件的成本与风险。  </p>
+<p>以上都是在单线程的前提下讨论的，多线程暂时超出我的能力范围，不予讨论（逃</p>
+<h1 id="Command-模式"><a href="#Command-模式" class="headerlink" title="Command 模式"></a>Command 模式</h1><p>Command 模式的核心是把行为封装成对象。其实像C++这样能把函数像变量一样传来传去的语言来说，Command 模式真的没多少用，尤其是自从C++11有了lambda、bind和function之后。相应地 Strategy 模式也没啥用。这里让编辑器支持撤销/重做操作算是 Command 模式一个为数不多的用处之一。    </p>
+<p>既然将行为封装成了对象，那么在执行这个命令（行为）时需要的参数也就可以放在对象里，因此想要撤销这个行为的动作时可以根据这些参数来恢复到执行命令前的情况，因为会有一连串的命令序列，用于记录用户的每一次编辑操作，这里将用<code>std::list</code>来储存该命令队列。如果只想支持“撤销”操作的话完全可以只用<code>std::stack</code>来储存它，但为了支持“重做”操作，只用栈还是不行的。   </p>
+<p>我们课程设计中用到的Command继承体系（UML类图）：<br><img src="/images/command.png" alt="command">  </p>
+<p>三个子类的功能如它们的名字一样。这里重载了函数调用运算符，不习惯的话也可以将函数调用运算符改成<code>void do();</code>，当成普通成员函数来调用，效果都是一样的。  </p>
+<p>撤销/重做的单元是单个文本文件，在我们的程序里被抽象为一个类<code>TextFile</code>：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TextFile</span>:</span> <span class="keyword">public</span> QObject</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">Q_INVOKABLE <span class="keyword">void</span> <span class="title">undo</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">Q_INVOKABLE <span class="keyword">void</span> <span class="title">redo</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">Q_INVOKABLE <span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> row, <span class="keyword">int</span> column, QChar character)</span></span>;          </span><br><span class="line">    <span class="function">Q_INVOKABLE <span class="keyword">void</span> <span class="title">erase</span><span class="params">(<span class="keyword">int</span> row, <span class="keyword">int</span> column)</span></span>;   </span><br><span class="line">    <span class="function">Q_INVOKABLE <span class="keyword">void</span> <span class="title">replaceAll</span><span class="params">(QString newString)</span></span>;                         </span><br><span class="line">    ...</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="comment">//add a command to 'historyList'</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">addCommand</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;EditCommand&gt; &amp;&amp;command)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">list</span>&lt;<span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;EditCommand&gt;&gt; historyList;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">list</span>&lt;<span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;EditCommand&gt;&gt;::iterator nextCommand;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>使用<code>std::unique_ptr</code>的代价和raw pointer的开销几乎一样，也支持多态，还不用手动delete不用的对象，是现代C++的写法，不习惯的可以使用raw pointer来代替，没关系。  </p>
+<p><code>TextFile</code>中维护一个command的列表（<code>historyList</code>，使用<code>std::list</code>封装的一串<code>EditCommand</code>），用于记录执行过的命令序列，辅助完成撤销/重做操作，<code>nextCommand</code>指向重做（redo）时要执行的下一条指令。<br>在未执行过撤销（undo）操作的情况下，<code>nextCommand</code>指向<code>historyList</code>的尾后位置（尾后迭代器），这个位置上是不存在<code>EditCommand</code>的，如图：</p>
+<p><img src="/images/undo%20redo0.png" alt="redo undo"></p>
+<p>在当前位置，执行两次撤销操作后，<code>nextCommand</code>会指向黄色的<code>EditCommand</code>：</p>
+<p><img src="/images/undo%20redo1.png" alt="redo undo"></p>
+<p>在这个位置上，如果执行撤销操作，则先将<code>nextCommand</code>往回推一步，指向紫色的<code>EditCommand</code>，再调用紫色<code>EditCommand</code>的<code>undo()</code>成员函数。<br>若执行重做操作，则先调用黄色<code>EditCommand</code>的<code>redo()</code>成员函数，再将<code>nextCommand</code>向后推一步，指向右边那个灰色的<code>EditCommand</code>。<br>若在此处执行普通的编辑操作，则会将<code>nextCommand</code>（包括它当前指向的黄色<code>EditCommand</code>）全部清除，再将新的指令压入<code>historyList</code>末尾，并将<code>nextCommand</code>后推一步，令它依旧是尾后迭代器。执行后的结果如下图：</p>
+<p><img src="/images/undo%20redo2.png" alt="undo redo"></p>
+<p>分析完毕后<code>TextFile::undo()</code>，<code>TextFile::redo()</code>和<code>TextFile::addCommand</code>的实现也很简单：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> TextFile::undo()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(nextCommand != historyList.begin()) &#123;</span><br><span class="line">        --nextCommand;</span><br><span class="line">        (*nextCommand)-&gt;undo();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> TextFile::redo()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(nextCommand != historyList.end()) &#123;</span><br><span class="line">        (*nextCommand)-&gt;redo();</span><br><span class="line">        ++nextCommand;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> TextFile::addCommand(<span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;EditCommand&gt; &amp;&amp;command)</span><br><span class="line">&#123;</span><br><span class="line">    historyList.erase(nextCommand, historyList.end());</span><br><span class="line">    historyList.push_back(<span class="built_in">std</span>::move(command));</span><br><span class="line">    nextCommand = historyList.end();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>只要你愿意，还可以在<code>TextFile::addCommand</code>中控制历史列表（<code>historyList</code>）的长度。   </p>
+<p>使用这些 Command 时只要在相应的函数中构造 Command 对象，并调用其相应操作即可，如下：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> TextFile::insert(<span class="keyword">int</span> row, <span class="keyword">int</span> column, QChar character)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">auto</span> insertCommand = <span class="built_in">std</span>::make_unique&lt;InsertCommand&gt;(</span><br><span class="line">               <span class="built_in">std</span>::make_pair(row, column), character, text, <span class="keyword">this</span>);</span><br><span class="line">    (*insertCommand)();</span><br><span class="line">    addCommand(<span class="built_in">std</span>::move(insertCommand));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="Visitor-模式"><a href="#Visitor-模式" class="headerlink" title="Visitor 模式"></a>Visitor 模式</h1><p>Visitor 模式被创造出来的目的主要是去弥补C++不支持双分派（double-dispatch），只支持单分派（single-dispatch）：  </p>
+<ul>
+<li>单分派：用哪种操作实现一个请求取决于两个方面：该请求的名称和一个接收者的类型。  </li>
+<li>双分派：执行的操作取决于请求的种类和两个接收者的类型。  </li>
+</ul>
+<blockquote>
+<p>这是 Visitor 模式的关键所在：得到执行的操作不仅决定于 Visitor 的类型还决定于它访问的 Element 类型。可以不将操作静态地绑定在 Element 接口中，而将其安放在一个Visitor 中，并使用 Accept 在运行时进行绑定。     ——《设计模式》</p>
+</blockquote>
+<p>上面的“Accept”在我们的程序中对应的是“traverse”： </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TextStructure</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">traverse</span><span class="params">(AbstractVisitor &amp;visitor)</span></span>; <span class="comment">//inner iterator</span></span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> TextStructure::traverse(AbstractVisitor &amp;visitor)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">for</span>( every element in TextStructure )    <span class="comment">//pseudo-code</span></span><br><span class="line">        <span class="keyword">if</span>(!visitor.visit(element))</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注：得到了最可爱的TMT的批准，以引用这些代码（包括下面那段），她是<code>TextStructure</code>和<code>SearchVisitor</code>的作者，我略微修改了一下格式。   </p>
+<p>接用 Visitor 模式，我们给底层结构增加一个（需要访问全部元素的）操作变得很简单，只需要从 Visitor 继承体系中派生出一个新类即可。  </p>
+<p>下面是编辑器中的 Visitor 继承体系（三个子类，三个功能）：</p>
+<p><img src="/images/visitor.png" alt="visitor"></p>
+<ul>
+<li>DisplayVisitor：用于将刚加载到内存中的文件显示在UI界面上。</li>
+<li>SaveVisitor：用于将内存中的数据结构以文本文档(.txt)的形式储存到硬盘中。</li>
+<li>SearchVisitor：用于完成搜索操作，内部融合了KMP算法。</li>
+</ul>
+<p>前两个 Visitor 没什么好说的，这里展示一下 SearchVisitor 的关键部分实现代码，类的定义见上面的UML类图。  </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">SearchVisitor::SearchVisitor(QString format, Qt::CaseSensitivity cs)</span><br><span class="line">    :target(format)</span><br><span class="line">    ,sensitivity(cs)</span><br><span class="line">    ,next(<span class="keyword">new</span> <span class="keyword">int</span> [format.size()])</span><br><span class="line">    ,index(<span class="number">0</span>)        <span class="comment">//模式串游标</span></span><br><span class="line">    ,row_count(<span class="number">0</span>)    <span class="comment">//当前访问的字符位于第几行</span></span><br><span class="line">    ,column_count(<span class="number">0</span>) <span class="comment">//当前访问的字符位于第几列</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">    next[<span class="number">0</span>] = <span class="number">-1</span>;    <span class="comment">//next[0]初始化为-1.  -1表示不存在相同的最大前缀和最大后缀</span></span><br><span class="line">    <span class="keyword">int</span> j = <span class="number">-1</span>;      <span class="comment">//j初始化为-1</span></span><br><span class="line">    <span class="keyword">while</span>( i &lt; format.size()<span class="number">-1</span> ) &#123;</span><br><span class="line">        <span class="keyword">if</span>(j==<span class="number">-1</span> || equal(format[i],format[j] ) ) &#123;</span><br><span class="line">            i++;</span><br><span class="line">            j++;</span><br><span class="line">            next[i]=j;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            j = next[j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*遍历kmp算法求匹配*/</span></span><br><span class="line"><span class="keyword">bool</span> SearchVisitor::visit(QChar&amp; element) &#123;   </span><br><span class="line">    <span class="built_in">std</span>::pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; position(<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span>(element!=<span class="string">'\n'</span> &amp;&amp; index &lt; target.size()) &#123;</span><br><span class="line">       <span class="keyword">while</span>( index != <span class="number">-1</span> &amp;&amp; !equal(element,target[index]) )<span class="comment">//匹配失败</span></span><br><span class="line">           index=next[index];</span><br><span class="line">       index++;</span><br><span class="line">       <span class="keyword">if</span> (index == target.size()) &#123;  <span class="comment">//若匹配成功，记录结果</span></span><br><span class="line">           position.second = column_count-target.size()+<span class="number">1</span>;</span><br><span class="line">           position.first = row_count;</span><br><span class="line">           result.push_back(position);</span><br><span class="line">           index = <span class="number">0</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       column_count++;</span><br><span class="line">       <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span>(element==<span class="string">'\n'</span>) &#123;        <span class="comment">//忽略换行符</span></span><br><span class="line">        row_count++;</span><br><span class="line">        column_count =<span class="number">0</span>;</span><br><span class="line">        index=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里在构造函数中计算<code>next</code>数组的值，通过 <code>visit(QChar&amp; element)</code>函数在<code>SearchVisitor</code>内累积状态，以辅助实现匹配过程。KMP算法维护两个游标，一个标识主串字符位置，一个标识模式串字符位置，上面代码中<code>index</code>即为模式串上的游标，而主串上的游标是不用在<code>SearchVisitor</code>中手动推进的，而是通过<code>TextStructure</code>提供的<code>traverse(AbstractVisitor &amp;visitor)</code>完成。<br>在进行搜索操作的时候，可以这样写：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">QString <span class="title">fmt</span><span class="params">(<span class="string">"format string"</span>)</span></span>;</span><br><span class="line">Qt::CaseSensitivity cs = Qt::CaseSensitive;</span><br><span class="line"></span><br><span class="line"><span class="comment">//text is a instantiation of TextStructure</span></span><br><span class="line"><span class="keyword">auto</span> sv = SearchVisitor(fmt, cs);</span><br><span class="line">text.traverse(searchVisitor);</span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> result = sv.getResult();</span><br></pre></td></tr></table></figure></p>
+<p>另外两个Visitor：<code>DisplayVisitor</code>和<code>SaveVisitor</code>都非常简单，不在此展开叙述，有兴趣的同学可以参考我的<a href="(https://github.com/mytpp/MiniEditor">GayHub</a>)</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/OOP/" rel="tag"># OOP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/12/Introduction-to-OOP/" rel="next" title="Introduction to OOP (via C++)">
+                <i class="fa fa-chevron-left"></i> Introduction to OOP (via C++)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">mytpp</p>
+              <p class="site-description motion-element" itemprop="description">OOP C++</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/mytpp" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yourtpp@outlook.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Singleton模式"><span class="nav-number">2.</span> <span class="nav-text">Singleton模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#比较-GoF-Singleton-与-Meyers-Singleton"><span class="nav-number">2.1.</span> <span class="nav-text">比较 GoF Singleton 与 Meyers Singleton</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Command-模式"><span class="nav-number">3.</span> <span class="nav-text">Command 模式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Visitor-模式"><span class="nav-number">4.</span> <span class="nav-text">Visitor 模式</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mytpp
+  
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    <script type="text/javascript">
+      var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+      document.write(unescape("%3Cspan id='cnzz_stat_icon_1274131161'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s13.cnzz.com/z_stat.php%3Fid%3D1274131161' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+
+  </span>
+
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+&nbsp;&nbsp;|&nbsp;&nbsp;本站总点击 <span id="busuanzi_value_site_pv"></span> 次
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
