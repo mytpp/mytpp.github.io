@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="OOP," />
+  <meta name="keywords" content="OOP,设计模式," />
 
 
 
@@ -80,7 +80,7 @@
 
 
 <meta name="description" content="序言大二下学期学校开了一门课：数据结构课程设计，要求三人组队完成一个简易的文本编辑器。底层数据结构都被老师规定好了不能改，也没什么可讲的，这篇文章主要谈其中用到的设计模式：Singleton模式（没有出现在最终版本中）、Command模式、Visitor模式。这也是我第一次使用设计模式。   顺带一提，《设计模式》真的是很好的OOP入门书，不要被它的名字吓到，GoF在书的最后也说了这本书是一本合适">
-<meta name="keywords" content="OOP">
+<meta name="keywords" content="OOP,设计模式">
 <meta property="og:type" content="article">
 <meta property="og:title" content="课程设计-文本编辑器中用到的设计模式">
 <meta property="og:url" content="https://mytpp.github.io/2018/07/08/课程设计-文本编辑器中用到的设计模式/index.html">
@@ -92,7 +92,7 @@
 <meta property="og:image" content="https://mytpp.github.io/images/undo%20redo1.png">
 <meta property="og:image" content="https://mytpp.github.io/images/undo%20redo2.png">
 <meta property="og:image" content="https://mytpp.github.io/images/visitor.png">
-<meta property="og:updated_time" content="2018-07-09T16:15:22.398Z">
+<meta property="og:updated_time" content="2018-07-12T03:05:14.170Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="课程设计-文本编辑器中用到的设计模式">
 <meta name="twitter:description" content="序言大二下学期学校开了一门课：数据结构课程设计，要求三人组队完成一个简易的文本编辑器。底层数据结构都被老师规定好了不能改，也没什么可讲的，这篇文章主要谈其中用到的设计模式：Singleton模式（没有出现在最终版本中）、Command模式、Visitor模式。这也是我第一次使用设计模式。   顺带一提，《设计模式》真的是很好的OOP入门书，不要被它的名字吓到，GoF在书的最后也说了这本书是一本合适">
@@ -411,7 +411,7 @@
 <p>前两个 Visitor 没什么好说的，这里展示一下 SearchVisitor 的关键部分实现代码，类的定义见上面的UML类图。  </p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">SearchVisitor::SearchVisitor(QString format, Qt::CaseSensitivity cs)</span><br><span class="line">    :target(format)</span><br><span class="line">    ,sensitivity(cs)</span><br><span class="line">    ,next(<span class="keyword">new</span> <span class="keyword">int</span> [format.size()])</span><br><span class="line">    ,index(<span class="number">0</span>)        <span class="comment">//模式串游标</span></span><br><span class="line">    ,row_count(<span class="number">0</span>)    <span class="comment">//当前访问的字符位于第几行</span></span><br><span class="line">    ,column_count(<span class="number">0</span>) <span class="comment">//当前访问的字符位于第几列</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">    next[<span class="number">0</span>] = <span class="number">-1</span>;    <span class="comment">//next[0]初始化为-1.  -1表示不存在相同的最大前缀和最大后缀</span></span><br><span class="line">    <span class="keyword">int</span> j = <span class="number">-1</span>;      <span class="comment">//j初始化为-1</span></span><br><span class="line">    <span class="keyword">while</span>( i &lt; format.size()<span class="number">-1</span> ) &#123;</span><br><span class="line">        <span class="keyword">if</span>(j==<span class="number">-1</span> || equal(format[i],format[j] ) ) &#123;</span><br><span class="line">            i++;</span><br><span class="line">            j++;</span><br><span class="line">            next[i]=j;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            j = next[j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*遍历kmp算法求匹配*/</span></span><br><span class="line"><span class="keyword">bool</span> SearchVisitor::visit(QChar&amp; element) &#123;   </span><br><span class="line">    <span class="built_in">std</span>::pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; position(<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span>(element!=<span class="string">'\n'</span> &amp;&amp; index &lt; target.size()) &#123;</span><br><span class="line">       <span class="keyword">while</span>( index != <span class="number">-1</span> &amp;&amp; !equal(element,target[index]) )<span class="comment">//匹配失败</span></span><br><span class="line">           index=next[index];</span><br><span class="line">       index++;</span><br><span class="line">       <span class="keyword">if</span> (index == target.size()) &#123;  <span class="comment">//若匹配成功，记录结果</span></span><br><span class="line">           position.second = column_count-target.size()+<span class="number">1</span>;</span><br><span class="line">           position.first = row_count;</span><br><span class="line">           result.push_back(position);</span><br><span class="line">           index = <span class="number">0</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       column_count++;</span><br><span class="line">       <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span>(element==<span class="string">'\n'</span>) &#123;        <span class="comment">//忽略换行符</span></span><br><span class="line">        row_count++;</span><br><span class="line">        column_count =<span class="number">0</span>;</span><br><span class="line">        index=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这里在构造函数中计算<code>next</code>数组的值，通过 <code>visit(QChar&amp; element)</code>函数在<code>SearchVisitor</code>内累积状态，以辅助实现匹配过程。KMP算法维护两个游标，一个标识主串字符位置，一个标识模式串字符位置，上面代码中<code>index</code>即为模式串上的游标，而主串上的游标是不用在<code>SearchVisitor</code>中手动推进的，而是通过<code>TextStructure</code>提供的<code>traverse(AbstractVisitor &amp;visitor)</code>完成。<br>在进行搜索操作的时候，可以这样写：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">QString <span class="title">fmt</span><span class="params">(<span class="string">"format string"</span>)</span></span>;</span><br><span class="line">Qt::CaseSensitivity cs = Qt::CaseSensitive;</span><br><span class="line"></span><br><span class="line"><span class="comment">//text is a instantiation of TextStructure</span></span><br><span class="line"><span class="keyword">auto</span> sv = SearchVisitor(fmt, cs);</span><br><span class="line">text.traverse(searchVisitor);</span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> result = sv.getResult();</span><br></pre></td></tr></table></figure></p>
-<p>另外两个Visitor：<code>DisplayVisitor</code>和<code>SaveVisitor</code>都非常简单，不在此展开叙述，有兴趣的同学可以参考我的<a href="(https://github.com/mytpp/MiniEditor">GayHub</a>)</p>
+<p>另外两个Visitor：<code>DisplayVisitor</code>和<code>SaveVisitor</code>都非常简单，不在此展开叙述，有兴趣的同学可以参考我的<a href="https://github.com/mytpp/MiniEditor" target="_blank" rel="noopener">GayHub</a></p>
 
       
     </div>
@@ -430,6 +430,8 @@
         <div class="post-tags">
           
             <a href="/tags/OOP/" rel="tag"># OOP</a>
+          
+            <a href="/tags/设计模式/" rel="tag"># 设计模式</a>
           
         </div>
       
@@ -549,7 +551,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>
