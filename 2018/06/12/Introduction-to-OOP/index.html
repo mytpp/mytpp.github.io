@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="OOP,CPP,长文," />
+  <meta name="keywords" content="CPP,OOP,长文," />
 
 
 
@@ -80,7 +80,7 @@
 
 
 <meta name="description" content="序言这篇教程也算是我的一个学习总结吧，当然我也不是多牛B，花了一年时间才刚刚入门C++，学C++也就是用来娱乐一下，也没弄出来什么高端的东西，所以当然不要期盼从这学到多前沿的工程技巧，毕竟这只是一篇导论嘛，我也只是整理了一些我读过的书上提到的知识，没什么创新点。真正的大佬估计看几秒就索然无味了（逃   这篇教程可能更适合有一些 C++ C with class语言基础，但是对于OOP思想还不甚了解">
-<meta name="keywords" content="OOP,CPP,长文">
+<meta name="keywords" content="CPP,OOP,长文">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Introduction to OOP (via C++)">
 <meta property="og:url" content="https://mytpp.github.io/2018/06/12/Introduction-to-OOP/index.html">
@@ -91,7 +91,7 @@
 <meta property="og:image" content="https://mytpp.github.io/images/vtbl1.png">
 <meta property="og:image" content="https://mytpp.github.io/images/vtbl2.png">
 <meta property="og:image" content="https://mytpp.github.io/images/rtti.png">
-<meta property="og:updated_time" content="2018-07-08T10:19:09.594Z">
+<meta property="og:updated_time" content="2018-09-08T08:59:55.830Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Introduction to OOP (via C++)">
 <meta name="twitter:description" content="序言这篇教程也算是我的一个学习总结吧，当然我也不是多牛B，花了一年时间才刚刚入门C++，学C++也就是用来娱乐一下，也没弄出来什么高端的东西，所以当然不要期盼从这学到多前沿的工程技巧，毕竟这只是一篇导论嘛，我也只是整理了一些我读过的书上提到的知识，没什么创新点。真正的大佬估计看几秒就索然无味了（逃   这篇教程可能更适合有一些 C++ C with class语言基础，但是对于OOP思想还不甚了解">
@@ -385,7 +385,7 @@
 <p>上面引用<a href="http://en.cppreference.com/w/cpp/memory/new/operator_delete#Class-specific_overloads" target="_blank" rel="noopener">cppreference</a>的部分提到了通过基类指针删除派生类数组会导致UB，我再补充说明一下这个问题，虽然我觉得很少有人会这么干：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Widget *pW = <span class="keyword">new</span> SpecialWidget [<span class="number">10</span>];</span><br><span class="line">...</span><br><span class="line"><span class="keyword">delete</span> pW; <span class="comment">//undefined behavior</span></span><br></pre></td></tr></table></figure></p>
 <p>这个就和基类有没有虚析构函数无关了，只要敢这么写，一定是UB，还是因为<a href="http://en.cppreference.com/w/cpp/memory/new/operator_delete" target="_blank" rel="noopener">operator delete []</a>的size_t参数传递的问题。这么做的同学的动机可能是觉得只要是基类指针，就能通过让它指向派生类的对象来体现多态，其实真要想这么干，应该用指针数组而不是普通数组嘛。《More Effective C++》条款3对这个问题有更深入一点的讨论，想了解更多的同学可以看这本书。</p>
 <p>但要注意一下一般只有用于多态的基类才有虚析构函数的需求，不是所有的类都用做多态用途的。如果没有必要使用虚析构函数就不要这么做了，这样反而会造成额外开销（会引入vtbl和vptr这些东西，浪费了几个指针的空间，本文后面会提到这些）。</p>
-<p>另外一种建议声明虚析构函数的地方是：有时候你希望拥有抽象类，但手头又没有纯虚函数，这时候可以选择将析构函数声明为纯虚函数，并提供析构函数的定义（无定义理论上会报链接错误的啊，但我们课程设计中没有定义这个程序也能跑起来，就很奇怪，难道被编译器优化了？┭┮﹏┭┮当时忘了定义这个是我的失误，不知道验收时程序崩了好几次会不会跟这个有关，隐约感觉又坑了队友一次…）  </p>
+<p>另外一种建议声明虚析构函数的地方是：有时候你希望拥有抽象类，但手头又没有纯虚函数，这时候可以选择将析构函数声明为纯虚函数，这种情况下必须为纯虚析构函数提供定义，因为编译器此时不会自动生成析构函数的定义（我认为是因为编译器自动生成的析构函数都是inline的，而纯虚函数又不能定义在类的内部，即必须不是inline的，所以无法自动生成纯虚析构函数的定义）。  </p>
 <p>你可能又有疑问：抽象类不一般都用作接口嘛，接口类一般都用作多态的吧，那怎么会没有其他的虚函数呢？嗯，是这样的（前半句），但总有例外，比如混入类（Mixin Class）了解一下？<br>按我的理解来解释一下这个技术：就像以前写C语言代码时有两个函数用用到了相同的代码段，为了贯彻DRY原则，好的设计者会把这两个函数中重复的部分抽出来形成一个新函数，让之前的两个函数在内部去调用这个新函数。在C++里类似地，如果有两个类都需要实现一部分相同的功能，一个可选的设计是将重复的部分抽出来形成一个新类，然后让原来的两个类都继承自这个类，然而这个类仅仅是为了减少重复代码而出现的，并不需要实例化出对象，所以干脆直接设为抽象类（还记得吗，上面刚说过，如果不想给用户做一件事的权利，就从语法层面禁止这件事的出现）。<br>关于这个技术的细节不想在这个入门教程里提了，有兴趣的同学可以看《More Effective C++》条款27，有一个使用这个技术的例子。  </p>
 <h1 id="接口与实现，继承与复合"><a href="#接口与实现，继承与复合" class="headerlink" title="接口与实现，继承与复合"></a>接口与实现，继承与复合</h1><p>《Effective C++》和《设计模式》中对一些相同概念有不同的叫法，这些概念有些比较重要，因此在这里简单区分一下，后面会详细说明其中几个点。<br>Scott Meyers（《Effective C++》作者）区分了类与类之间三种不同关系：</p>
 <ul>
@@ -571,9 +571,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/OOP/" rel="tag"># OOP</a>
-          
             <a href="/tags/CPP/" rel="tag"># CPP</a>
+          
+            <a href="/tags/OOP/" rel="tag"># OOP</a>
           
             <a href="/tags/长文/" rel="tag"># 长文</a>
           
@@ -673,7 +673,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -695,7 +695,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>
